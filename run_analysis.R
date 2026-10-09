@@ -1,7 +1,6 @@
 # Functional Data Analysis of Running Heart Rates
 # Based on the original coursework implementation.
-# Run from the repository root with authorized data in data/Diff_runs.txt.
-# Note: K-means cluster labels are arbitrary and may change between runs.
+# NOTE: K-means cluster labels are arbitrary and may change between runs.
 
 #----------------------------Different type of runs----------------------------
 #------------------Easy runs, Interval runs, and race runs---------------------
@@ -20,8 +19,8 @@ data <- read.delim(data_path, header = TRUE, stringsAsFactors = FALSE)
 run.names <- names(data)[-1]
 group <- factor(c("Aerobic","Aerobic","Aerobic","Aerobic","Aerobic","Aerobic",
                   "Intervals","Intervals","Intervals","Intervals","Intervals","Race","Race",
-                  "Race")) #Adding the category for each of the runs. Thsi will be used
-#later for the fonction on scalar model, this iwll be the scalar predictor
+                  "Race")) #Adding the category for each of the runs. This will be used
+#later for the function on scalar model, this will be the scalar predictor
 
 names(group) <- run.names
 
@@ -46,25 +45,13 @@ constraints=matrix(c(0,1,1,1),1)
 gls.mod=fosr(fdobj=hr.fd,X=mod.mat, con=constraints, method="GLS")
 par(mfrow=c(1,4))
 plot(gls.mod, split=1, set.mfrow=FALSE, titles=c("GLS: Intercept", levels(factor(group))), ylab="", xlab="Kilometer")
-#The first plot is the intercept, this one is the average heart rate for all runs.
-#We can see at the beginning the heart rate increases, then at about kilometer 2 (Hmmm or 1.5)
-#the curve maintains kind of stable until kilometer 8 where it start decreasing. 
-#For the next plot we can see how much the aerobic runs differ from the intercept curve. 
-#Notice for the easy runs the average heart rate falls below the average across all the curves
-#about 10 to 15 beats below the average. 
-#Moving to the next plot, we find the intervals. Here it tell us at the beginning of the runs, 
-#the heart rate falls below the average but after kilometer 2 we can start seeing some oscillation
-#pattern which follows the interval runs goal. 
-#Lastly we have the race runs. We can see from this plot that race runs start significantly above 
-#the average and stays elevated for the entire run. 
+
 
 
 
 #-----------------------------------------------------------------
 par(mfrow=c(1,3))
 
-#plot(lap.index, data$Nov_18, type = "l", lwd = 2,
-#     xlab = "Distance (km)", ylab = "Heart rate (bpm)", main = "Example Aerobic Run")
 plot(lap.index, data$Dec17, type = "l", ylim = c(100, 200),
      xlab = "Distance (km)", ylab = "Heart rate (bpm)", main = "Example Aerobic Run")
 
@@ -143,7 +130,6 @@ p <- ggplot(scores.df, aes(x = PC1, y = PC2, color = Cluster)) +
   labs(title = "PCA Score Plot with K-means Clustering (k=3)",
        x = "PC1", y = "PC2") +
   theme_minimal()
-#ggsave("cluster.png", p, bg = "transparent", width = 5, height = 4, dpi = 300)
 
 #Let's get back the representing function for each the groups. 
 #Take the mean of the cluster in four dim,
@@ -162,6 +148,7 @@ for(k in 1:nrow(c.k)){
   f.k[[k]] <- temp.sum
 }
 
+#This can change
 func.group1 <- eval.fd(dist.grid, f.k[[3]])
 func.group2 <- eval.fd(dist.grid, f.k[[2]])
 func.group3 <- eval.fd(dist.grid, f.k[[1]])
